@@ -17,7 +17,6 @@ import Tesseract from "tesseract.js";
 import { verifyLabel } from "./services/LabelVerifier.js";
 
 function App() {
-
   const [strictMode, setStrictMode] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -31,17 +30,11 @@ function App() {
   const [showOcrText, setShowOcrText] = useState(false);
   const [verificationResults, setVerificationResults] = useState([]);
 
+  // Performs OCR on the selected image and compares
+  // extracted label data against user-entered values.
   async function handleVerifyLabel() {
-    // console.log("Verify Label clicked");
-    // console.log({brandName, productType, alcoholVolume, netContents});
-
     if (selectedFile === null) {
       setNotificationMessage("Please select an image.");
-      setNotificationOpen(true);
-      return;
-    }
-    if (selectedFile === null) {
-      setNotificationMessage("Please select an image first.");
       setNotificationOpen(true);
       return;
     }
@@ -51,33 +44,18 @@ function App() {
     setNotificationOpen(true);
 
     try {
+      // Extract text from the uploaded label image
       const result = await Tesseract.recognize(selectedFile, "eng");
-
       const extractedText = result.data.text;
 
       setOCRText(extractedText);
 
-      const results = verifyLabel(
-          {
-            brandName,
-            productType,
-            alcoholVolume,
-            netContents
-          },
-          extractedText,
-          strictMode
-      );
-
+      // Compare OCR text against application data
+      const results = verifyLabel({brandName, productType, alcoholVolume, netContents}, extractedText, strictMode);
       setVerificationResults(results);
 
-      const passedCount = results.filter(
-          (result) => result.passed
-      ).length;
-
-      setNotificationMessage(
-          `Verification complete: ${passedCount} of ${results.length} fields matched.`
-      );
-
+      const passedCount = results.filter((result) => result.passed).length;
+      setNotificationMessage(`Verification complete: ${passedCount} of ${results.length} fields matched.`);
       setNotificationOpen(true);
     }
     catch (error) {
@@ -90,6 +68,7 @@ function App() {
     }
   }
 
+  // Reset form fields, OCR output, and verification results
   function handleClearForm() {
     setBrandName("");
     setProductType("");
@@ -118,10 +97,7 @@ function App() {
               <Stack spacing={1}>
                 <FormControlLabel
                     control={
-                      <Switch
-                          checked={strictMode}
-                          onChange={(event) => setStrictMode(event.target.checked)}
-                      />
+                      <Switch checked={strictMode} onChange={(event) => setStrictMode(event.target.checked)}/>
                     }
                     label="Strict Compliance Mode"
                 />
@@ -173,6 +149,7 @@ function App() {
                 </Button>
               </Stack>
 
+              {/* Verification summary displayed after a label is processed */}
               {verificationResults.length > 0 && (
                   <Paper variant="outlined" sx={{ p: 2 }}>
                     <Typography variant="h6" gutterBottom>
@@ -190,6 +167,7 @@ function App() {
                   </Paper>
               )}
 
+              {/* Optional section to review raw OCR output */}
               {ocrText !== "" && (
                   <Paper variant="outlined" sx={{ p: 2 }}>
                     <Stack spacing={2}>
@@ -227,6 +205,7 @@ function App() {
           </Stack>
         </Paper>
 
+        {/* User notifications and status messages */}
         <Snackbar open={notificationOpen} autoHideDuration={3000} onClose={() => setNotificationOpen(false)}>
           <Alert severity="info" onClose={() => setNotificationOpen(false)}>
             {notificationMessage}

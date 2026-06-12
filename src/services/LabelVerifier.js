@@ -41,12 +41,13 @@ function checkField(fieldName, expectedValue, ocrText, strictMode) {
 }
 
 function checkGovernmentWarning(ocrText) {
+    const normalizedText = ocrText.toLowerCase();
     return {
         field: "Government Warning",
         expected: "Present",
         passed:
-            ocrText.includes("GOVERNMENT WARNING:") &&
-            ocrText.includes("Surgeon General")
+            normalizedText.includes("government warning") &&
+            normalizedText.includes("surgeon general")
     };
 }
 
