@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import Tesseract from "tesseract.js";
-import { verifyLabel } from "./services/labelVerifier.js";
+import { verifyLabel } from "./services/LabelVerifier.js";
 
 function App() {
 
