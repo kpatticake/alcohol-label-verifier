@@ -8,38 +8,88 @@ import {
   FormControlLabel,
   Switch,
   Snackbar,
-  Alert
+  Alert,
+  Collapse,
+  Divider
 } from "@mui/material";
-
 import { useState } from "react";
+import Tesseract from "tesseract.js";
+import { verifyLabel } from "./services/labelVerifier.js";
 
 function App() {
 
   const [strictMode, setStrictMode] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
   const [brandName, setBrandName] = useState("");
   const [productType, setProductType] = useState("");
   const [alcoholVolume, setAlcoholVolume] = useState("");
   const [netContents, setNetContents] = useState("");
-
+  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [ocrText, setOCRText] = useState("");
+  const [showOcrText, setShowOcrText] = useState(false);
   const [verificationResults, setVerificationResults] = useState([]);
 
-  function handleVerifyLabel() {
-    console.log("Verify Label clicked");
-    console.log({
-      brandName,
-      productType,
-      alcoholVolume,
-      netContents
-    });
+  async function handleVerifyLabel() {
+    // console.log("Verify Label clicked");
+    // console.log({brandName, productType, alcoholVolume, netContents});
 
+    if (selectedFile === null) {
+      setNotificationMessage("Please select an image.");
+      setNotificationOpen(true);
+      return;
+    }
+    if (selectedFile === null) {
+      setNotificationMessage("Please select an image first.");
+      setNotificationOpen(true);
+      return;
+    }
+
+    setIsProcessing(true);
+    setNotificationMessage("Reading label text...");
     setNotificationOpen(true);
 
-    // Validate inputs
+    try {
+      const result = await Tesseract.recognize(selectedFile, "eng");
 
-    // Run OCR on uploaded image
+      const extractedText = result.data.text;
+
+      setOCRText(extractedText);
+
+      const results = verifyLabel(
+          {
+            brandName,
+            productType,
+            alcoholVolume,
+            netContents
+          },
+          extractedText,
+          strictMode
+      );
+
+      setVerificationResults(results);
+
+      const passedCount = results.filter(
+          (result) => result.passed
+      ).length;
+
+      setNotificationMessage(
+          `Verification complete: ${passedCount} of ${results.length} fields matched.`
+      );
+
+      setNotificationOpen(true);
+    }
+    catch (error) {
+      console.error(error);
+      setNotificationMessage("Unable to read text from the image.");
+      setNotificationOpen(true);
+    }
+    finally {
+      setIsProcessing(false);
+    }
+
+    // Validate inputs
 
     // Normalize extracted text
 
@@ -102,28 +152,98 @@ function App() {
               <TextField label="Alcohol By Volume (ABV)" value={alcoholVolume} onChange={(event) => setAlcoholVolume(event.target.value)} fullWidth />
               <TextField label="Net Contents" value={netContents} onChange={(event) => setNetContents(event.target.value)} fullWidth />
 
-              <Button variant="outlined" component="label">
-                Upload Label Image
-                <input type="file" hidden accept="image/*" />
-              </Button>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <Button variant="outlined" component="label" fullWidth>
+                  Upload Label Image
+                  <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(event) => setSelectedFile(event.target.files[0])}
+                  />
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    component="label"
+                    sx={{display: { xs: "inline-flex", sm: "none" }}}
+                >
+                  Take Photo
+                  <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      capture="environment"
+                      onChange={(event) => setSelectedFile(event.target.files[0])}
+                  />
+                </Button>
+              </Stack>
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <Button variant="contained" size="large" onClick={handleVerifyLabel}>
-                  Verify Label
+                <Button variant="contained" size="large" onClick={handleVerifyLabel} disabled={isProcessing}>
+                  {isProcessing ? "Reading Label..." : "Verify Label"}
                 </Button>
 
                 <Button variant="outlined" size="large" onClick={handleClearForm}>
                   Clear Form
                 </Button>
               </Stack>
+              {verificationResults.length > 0 && (
+                  <Paper variant="outlined" sx={{ p: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Verification Results
+                    </Typography>
 
+                    <Stack spacing={1}>
+                      {verificationResults.map((result) => (
+                          <Typography key={result.field}>
+                            {result.passed ? "✅" : "❌"} {result.field}:{" "}
+                            {result.passed ? "Match" : "No Match"}
+                          </Typography>
+                      ))}
+                    </Stack>
+                  </Paper>
+              )}
+
+              {ocrText !== "" && (
+                  <Paper variant="outlined" sx={{ p: 2 }}>
+                    <Stack spacing={2}>
+                      <Button
+                          variant="text"
+                          onClick={() => setShowOcrText(!showOcrText)}
+                      >
+                        {showOcrText ? "Hide Extracted Text" : "Show Extracted Text"}
+                      </Button>
+
+                      <Collapse in={showOcrText}>
+                        <Stack spacing={2}>
+                          <Divider />
+
+                          <Typography variant="h6">
+                            Extracted Label Text
+                          </Typography>
+
+                          <Typography
+                              variant="body2"
+                              sx={{
+                                whiteSpace: "pre-wrap",
+                                fontFamily: "monospace"
+                              }}
+                          >
+                            {ocrText}
+                          </Typography>
+                        </Stack>
+                      </Collapse>
+                    </Stack>
+                  </Paper>
+              )}
             </Stack>
           </Stack>
         </Paper>
 
         <Snackbar open={notificationOpen} autoHideDuration={3000} onClose={() => setNotificationOpen(false)}>
           <Alert severity="info" onClose={() => setNotificationOpen(false)}>
-            Verification started.
+            {notificationMessage}
           </Alert>
         </Snackbar>
       </Box>
