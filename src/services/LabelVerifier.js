@@ -18,6 +18,8 @@ export function verifyLabel(applicationData, ocrText, strictMode) {
 
 function checkField(fieldName, expectedValue, ocrText, strictMode) {
     const cleanedExpectedValue = expectedValue.trim();
+    const normalizedOcrText = normalizeText(ocrText);
+    const normalizedExpectedValue = normalizeText(expectedValue);
 
     if (strictMode) {
         return {
@@ -28,9 +30,6 @@ function checkField(fieldName, expectedValue, ocrText, strictMode) {
                 ocrText.includes(cleanedExpectedValue)
         };
     }
-
-    const normalizedOcrText = normalizeText(ocrText);
-    const normalizedExpectedValue = normalizeText(expectedValue);
 
     return {
         field: fieldName,

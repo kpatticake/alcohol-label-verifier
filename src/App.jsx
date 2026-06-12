@@ -88,18 +88,6 @@ function App() {
     finally {
       setIsProcessing(false);
     }
-
-    // Validate inputs
-
-    // Normalize extracted text
-
-    // Compare fields
-
-    // Check government warning
-
-    // Generate results
-
-    // Display results
   }
 
   function handleClearForm() {
@@ -117,7 +105,7 @@ function App() {
         <Paper elevation={3} sx={{width: "100%", p: { xs: 2, sm: 3, md: 4 }, boxSizing: "border-box"}}>
           <Stack spacing={3}>
             <Box>
-              <Typography variant="h4" component="h1" gutterBottom>
+              <Typography variant="h4" component="h1" gutterBottom sx={{ color: "black"}}>
                 Alcohol Label Verification
               </Typography>
 
@@ -163,11 +151,7 @@ function App() {
                   />
                 </Button>
 
-                <Button
-                    variant="outlined"
-                    component="label"
-                    sx={{display: { xs: "inline-flex", sm: "none" }}}
-                >
+                <Button variant="outlined" component="label" sx={{display: { xs: "inline-flex", sm: "none" }}}>
                   Take Photo
                   <input
                       type="file"
@@ -188,6 +172,7 @@ function App() {
                   Clear Form
                 </Button>
               </Stack>
+
               {verificationResults.length > 0 && (
                   <Paper variant="outlined" sx={{ p: 2 }}>
                     <Typography variant="h6" gutterBottom>
@@ -237,6 +222,7 @@ function App() {
                     </Stack>
                   </Paper>
               )}
+
             </Stack>
           </Stack>
         </Paper>
