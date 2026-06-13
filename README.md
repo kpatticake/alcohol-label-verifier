@@ -169,11 +169,13 @@ The current workflow assumes the user either:
 
 ## Limitations
 
-The largest limitation encountered was OCR accuracy on highly stylized labels.
+The largest limitation encountered was OCR accuracy on highly stylized label text, especially brand names.
 
-Tesseract performed very well when reading clean, high-contrast text. However, decorative fonts, curved text, artistic branding, and complex label designs often reduced recognition accuracy. Brand names were especially difficult because they are commonly displayed as large, stylized logo text rather than simple printed text. During testing, Tesseract often recognized standardized compliance information such as ABV, net contents, and government warning language more reliably than brand names.
+Tesseract performed well when reading clean, high-contrast text. However, decorative fonts, curved text, artistic branding, image-based logos, and complex label layouts reduced recognition accuracy. Brand names were the most difficult field to verify reliably because they are often presented as large stylized artwork rather than simple printed text. For example, during testing, Tesseract sometimes recognized secondary text such as `Distillery` but failed to capture the full brand name displayed above it.
 
-One advantage of the current implementation is that all OCR processing occurs directly within the browser. No external OCR APIs or third-party services are required.
+This made perfect field matching difficult in some cases, but it also demonstrated the purpose of the verification workflow. When OCR failed to extract a field accurately, the application correctly reported that field as a mismatch. The prototype therefore shows both the potential value of automated label verification and the practical limits of relying on OCR alone.
+
+Tesseract was selected because it supports browser-based OCR and does not require an external OCR API or third-party service. One advantage of the current implementation is that all OCR processing occurs directly within the browser. However, a production version would likely need additional OCR tuning, image preprocessing, confidence scoring, or a more advanced OCR/document analysis service to improve recognition of stylized brand names and complex label artwork.
 
 The government warning check is currently a presence check. It looks for key warning language such as `government warning` and `surgeon general`, but it does not fully validate the entire warning statement word-for-word. A production version would need more complete legal text validation.
 
@@ -215,7 +217,7 @@ Using AI significantly reduced the time spent searching documentation and troubl
 
 ## Time Spent
 
-I spent approximately 10 to 12 hours completing this project from start to finish.
+I spent approximately 15 hours completing this project from start to finish.
 
 I created and tested the application against multiple sample labels. OCR performance varied depending on label design, which provided valuable insight into the strengths and limitations of OCR-based verification systems.
 
