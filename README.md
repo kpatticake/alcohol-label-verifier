@@ -42,7 +42,8 @@ Start the development server:
 npm run dev
 ```
 
-Build the application:
+## Building the Application
+
 To create a production build or verify that the application builds successfully, run:
 
 ```bash
@@ -62,6 +63,8 @@ To test batch verification:
 3. Upload the sample CSV file from `public/testLabels`.
 4. Upload the eight corresponding label images from the same folder.
 5. Run batch verification.
+
+These sample files are included only for testing and demonstration purposes.
 
 
 ## Application Features
@@ -223,6 +226,8 @@ I created and tested the application against multiple sample labels. OCR perform
 
 ## Closing Thoughts
 
-Thank you for including me in this assessment. I genuinely enjoyed working on it and learned a great deal throughout the process. The project exposed me to technologies and workflows that I had not previously used, particularly OCR processing within a browser environment and automated cloud deployment.
+Thank you for including me in this assessment. I genuinely enjoyed working on it and learned a great deal throughout the process.
 
-I appreciate your time and consideration and look forward to discussing the project further.
+This project exposed me to technologies and workflows that I had not previously used in this way, particularly OCR processing within a browser environment and browser-based file access limitations. It also gave me the opportunity to apply my previous experience with React, AWS Amplify, QA testing, GUI development, and full-stack software engineering to a practical compliance-focused workflow.
+
+I appreciate your time and consideration.
