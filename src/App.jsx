@@ -83,8 +83,15 @@ function App() {
       <Box sx={{minHeight: "100vh", width: "100%", p: { xs: 2, sm: 3, md: 4 }, boxSizing: "border-box"}}>
         <Paper elevation={3} sx={{width: "100%", p: { xs: 2, sm: 3, md: 4 }, boxSizing: "border-box"}}>
           <Stack spacing={3}>
-            <Box>
-              <Typography variant="h4" component="h1" gutterBottom sx={{ color: "black"}}>
+            <Box sx={{ textAlign: "center" }}>
+              <Box
+                  component="img"
+                  src="/alcohol_verify.png"
+                  alt="Alcohol Label Verification"
+                  sx={{width: 80, height: 80, objectFit: "contain", mb: 1}}
+              />
+
+              <Typography variant="h4" component="h1" gutterBottom sx={{ color: "black" }}>
                 Alcohol Label Verification
               </Typography>
 
