@@ -4,13 +4,17 @@ This project was completed as part of a take-home assessment for the Department 
 
 ## Technology Stack
 
-I initially planned to build this project using Java and JavaFX, as those are the technologies I am most experienced with. After reviewing the requirements, I decided a web-based solution would be more appropriate and accessible. The final technology stack consists of:
+I initially planned to build this project using Java and JavaFX, as those are the technologies I am most experienced with. After reviewing the requirements, I decided a web-based solution would be more appropriate and accessible.
 
+The final technology stack consists of:
+* Node.js / npm
 * React JS
+* Vite
 * Material UI (MUI)
 * Tesseract.js
 * GitHub
 * AWS Amplify
+
 
 I selected React because it allows rapid development of responsive web applications that can be accessed through any modern browser and on a mobile device. Material UI provided a large collection of well-designed components, allowing me to focus on application functionality rather than building UI elements from scratch.
 
@@ -40,10 +44,8 @@ npm run dev
 
 * Upload alcohol label images from desktop devices
 * Capture and process label images directly from a mobile device camera
-* Mobile camera support
 * OCR text extraction using Tesseract.js
 * Verification of:
-
     * Brand Name
     * Product Type
     * Alcohol By Volume (ABV)
@@ -57,6 +59,13 @@ npm run dev
 ## Project Structure
 
 The application is intentionally organized into two primary files:
+
+## Assumptions
+
+This prototype uses manually entered form fields to represent application data that would normally come from a submitted label application or an internal system such as COLA. Direct integration with an internal system was not implemented because the project instructions described this as a standalone proof-of-concept.
+
+The current workflow assumes a user enters the expected label information, uploads or captures a label image, and then runs verification against the OCR-extracted text.
+
 
 ### App.jsx
 
@@ -82,9 +91,13 @@ Separating the verification logic from the UI helps keep the application easier 
 
 The largest limitation encountered was OCR accuracy on highly stylized labels.
 
-Tesseract performed very well when reading clean, high-contrast text. However, decorative fonts, curved text, artistic branding, and complex label designs often reduced recognition accuracy. Because of this, fields such as brand names were generally more difficult to verify than standardized compliance information such as ABV, net contents, and government warnings.
+Tesseract performed very well when reading clean, high-contrast text. However, decorative fonts, curved text, artistic branding, and complex label designs often reduced recognition accuracy. Brand names were especially difficult because they are commonly displayed as large, stylized logo text rather than simple printed text. During testing, Tesseract often recognized standardized compliance information such as ABV, net contents, and government warning language more reliably than brand names.
 
 One advantage of the current implementation is that all OCR processing occurs directly within the browser. No external OCR APIs or third-party services are required.
+
+Batch processing is not currently implemented. I chose to focus on building a working single-label verification workflow first, including OCR extraction, field comparison, result display, and mobile image capture support. Batch upload support would be a logical future enhancement.
+
+
 
 ## Development Process
 
