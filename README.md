@@ -220,7 +220,7 @@ Using AI significantly reduced the time spent searching documentation and troubl
 
 ## Time Spent
 
-I spent approximately 15 hours completing this project from start to finish.
+I spent approximately 12 hours completing this project from start to finish.
 
 I created and tested the application against multiple sample labels. OCR performance varied depending on label design, which provided valuable insight into the strengths and limitations of OCR-based verification systems.
 
